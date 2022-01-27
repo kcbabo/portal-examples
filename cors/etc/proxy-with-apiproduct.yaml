@@ -1,0 +1,313 @@
+apiVersion: v1
+items:
+- apiVersion: gloo.solo.io/v1
+  kind: Proxy
+  metadata:
+    creationTimestamp: "2022-01-27T13:37:42Z"
+    generation: 48
+    labels:
+      created_by: gateway
+    name: gateway-proxy
+    namespace: gloo-system
+    resourceVersion: "1727557"
+    uid: fc3c82fc-010c-44e5-9390-106cc721beb8
+  spec:
+    listeners:
+    - bindAddress: '::'
+      bindPort: 8080
+      httpListener:
+        virtualHosts:
+        - domains:
+          - api.example.com:31500
+          metadata:
+            sources:
+            - kind: '*v1.VirtualService'
+              name: dev
+              namespace: default
+              observedGeneration: 2
+          name: default.dev
+          routes:
+          - matchers:
+            - exact: /api/pets
+              methods:
+              - GET
+              - OPTIONS
+            metadata:
+              sources:
+              - kind: '*v1.RouteTable'
+                name: dev.petstore-product.v1
+                namespace: default
+                observedGeneration: 2
+              - kind: '*v1.VirtualService'
+                name: dev
+                namespace: default
+                observedGeneration: 2
+            name: vs:gateway-proxy_gateway-proxy_default_dev_route:petstore-product.v1_rt:default_dev.petstore-product.v1_route:petstore-product.default.petstore-schema.default.findPets
+            options:
+              autoHostRewrite: true
+              cors:
+                allowHeaders:
+                - Content-Type
+                - accept
+                - api-key
+                - Authorization
+                allowOrigin:
+                - http://petstore.example.com:31500
+                - http://api.example.com:31500
+              extauth:
+                configRef:
+                  name: default-petstore-product-dev
+                  namespace: default
+              rateLimitConfigs:
+                refs:
+                - name: default-petstore-product-dev
+                  namespace: default
+              stagedTransformations:
+                early:
+                  requestTransforms:
+                  - matcher:
+                      prefix: /
+                    requestTransformation:
+                      transformationTemplate:
+                        dynamicMetadataValues:
+                        - key: environment
+                          value:
+                            text: dev.default
+                        - key: api_product
+                          value:
+                            text: petstore-product.default
+                        passthrough: {}
+            routeAction:
+              multi:
+                destinations:
+                - destination:
+                    upstream:
+                      name: default-petstore-8080
+                      namespace: gloo-system
+                  weight: 1
+          - matchers:
+            - exact: /api/pets
+              methods:
+              - POST
+              - OPTIONS
+            metadata:
+              sources:
+              - kind: '*v1.RouteTable'
+                name: dev.petstore-product.v1
+                namespace: default
+                observedGeneration: 2
+              - kind: '*v1.VirtualService'
+                name: dev
+                namespace: default
+                observedGeneration: 2
+            name: vs:gateway-proxy_gateway-proxy_default_dev_route:petstore-product.v1_rt:default_dev.petstore-product.v1_route:petstore-product.default.petstore-schema.default.addPet
+            options:
+              autoHostRewrite: true
+              cors:
+                allowHeaders:
+                - Content-Type
+                - accept
+                - api-key
+                - Authorization
+                allowOrigin:
+                - http://petstore.example.com:31500
+                - http://api.example.com:31500
+              extauth:
+                configRef:
+                  name: default-petstore-product-dev
+                  namespace: default
+              rateLimitConfigs:
+                refs:
+                - name: default-petstore-product-dev
+                  namespace: default
+              stagedTransformations:
+                early:
+                  requestTransforms:
+                  - matcher:
+                      prefix: /
+                    requestTransformation:
+                      transformationTemplate:
+                        dynamicMetadataValues:
+                        - key: environment
+                          value:
+                            text: dev.default
+                        - key: api_product
+                          value:
+                            text: petstore-product.default
+                        passthrough: {}
+            routeAction:
+              multi:
+                destinations:
+                - destination:
+                    upstream:
+                      name: default-petstore-8080
+                      namespace: gloo-system
+                  weight: 1
+          - matchers:
+            - methods:
+              - DELETE
+              - OPTIONS
+              regex: /api/pets/[^/]+?
+            metadata:
+              sources:
+              - kind: '*v1.RouteTable'
+                name: dev.petstore-product.v1
+                namespace: default
+                observedGeneration: 2
+              - kind: '*v1.VirtualService'
+                name: dev
+                namespace: default
+                observedGeneration: 2
+            name: vs:gateway-proxy_gateway-proxy_default_dev_route:petstore-product.v1_rt:default_dev.petstore-product.v1_route:petstore-product.default.petstore-schema.default.deletePet
+            options:
+              autoHostRewrite: true
+              cors:
+                allowHeaders:
+                - Content-Type
+                - accept
+                - api-key
+                - Authorization
+                allowOrigin:
+                - http://petstore.example.com:31500
+                - http://api.example.com:31500
+              extauth:
+                configRef:
+                  name: default-petstore-product-dev
+                  namespace: default
+              rateLimitConfigs:
+                refs:
+                - name: default-petstore-product-dev
+                  namespace: default
+              stagedTransformations:
+                early:
+                  requestTransforms:
+                  - matcher:
+                      prefix: /
+                    requestTransformation:
+                      transformationTemplate:
+                        dynamicMetadataValues:
+                        - key: environment
+                          value:
+                            text: dev.default
+                        - key: api_product
+                          value:
+                            text: petstore-product.default
+                        passthrough: {}
+            routeAction:
+              multi:
+                destinations:
+                - destination:
+                    upstream:
+                      name: default-petstore-8080
+                      namespace: gloo-system
+                  weight: 1
+          - matchers:
+            - methods:
+              - GET
+              - OPTIONS
+              regex: /api/pets/[^/]+?
+            metadata:
+              sources:
+              - kind: '*v1.RouteTable'
+                name: dev.petstore-product.v1
+                namespace: default
+                observedGeneration: 2
+              - kind: '*v1.VirtualService'
+                name: dev
+                namespace: default
+                observedGeneration: 2
+            name: vs:gateway-proxy_gateway-proxy_default_dev_route:petstore-product.v1_rt:default_dev.petstore-product.v1_route:petstore-product.default.petstore-schema.default.findPetById
+            options:
+              autoHostRewrite: true
+              cors:
+                allowHeaders:
+                - Content-Type
+                - accept
+                - api-key
+                - Authorization
+                allowOrigin:
+                - http://petstore.example.com:31500
+                - http://api.example.com:31500
+              extauth:
+                configRef:
+                  name: default-petstore-product-dev
+                  namespace: default
+              rateLimitConfigs:
+                refs:
+                - name: default-petstore-product-dev
+                  namespace: default
+              stagedTransformations:
+                early:
+                  requestTransforms:
+                  - matcher:
+                      prefix: /
+                    requestTransformation:
+                      transformationTemplate:
+                        dynamicMetadataValues:
+                        - key: environment
+                          value:
+                            text: dev.default
+                        - key: api_product
+                          value:
+                            text: petstore-product.default
+                        passthrough: {}
+            routeAction:
+              multi:
+                destinations:
+                - destination:
+                    upstream:
+                      name: default-petstore-8080
+                      namespace: gloo-system
+                  weight: 1
+        - domains:
+          - petstore.example.com:31500
+          metadata:
+            sources:
+            - kind: '*v1.VirtualService'
+              name: petstore-portal
+              namespace: default
+              observedGeneration: 23
+          name: default.petstore-portal
+          routes:
+          - matchers:
+            - prefix: /
+            metadata:
+              sources:
+              - kind: '*v1.VirtualService'
+                name: petstore-portal
+                namespace: default
+                observedGeneration: 23
+            name: vs:gateway-proxy_gateway-proxy_default_petstore-portal_route:petstore-portal.default-route
+            routeAction:
+              single:
+                upstream:
+                  name: gloo-portal.gloo-portal
+                  namespace: gloo-portal
+      metadata:
+        sources:
+        - kind: '*v1.Gateway'
+          name: gateway-proxy
+          namespace: gloo-system
+          observedGeneration: 49
+      name: listener-::-8080
+      useProxyProto: false
+    - bindAddress: '::'
+      bindPort: 8443
+      httpListener: {}
+      metadata:
+        sources:
+        - kind: '*v1.Gateway'
+          name: gateway-proxy-ssl
+          namespace: gloo-system
+          observedGeneration: 49
+      name: listener-::-8443
+      useProxyProto: false
+  status:
+    statuses:
+      gloo-system:
+        reportedBy: gloo
+        state: 1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
